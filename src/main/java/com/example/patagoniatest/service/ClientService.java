@@ -32,4 +32,20 @@ public class ClientService {
         clientRepository.deleteById(id);
     }
 
+    public Optional<Client> getClient(Long id) {
+        return clientRepository.findById(id);
+    }
+
+    @Transactional
+    public void updateClient(Client client, Long id) {
+        Client updatedClient = clientRepository.findById(id).orElseThrow(() -> new IllegalStateException(
+                "client with id: " + id + "doesn´t exists"
+        ));
+        if (!Objects.equals(updatedClient.getFullName(), client.getFullName())){
+            updatedClient.setFullName(client.getFullName());
+        }
+        if (updatedClient.getIncome() != client.getIncome()){
+            updatedClient.setIncome(client.getIncome());
+        }
+    }
 }
