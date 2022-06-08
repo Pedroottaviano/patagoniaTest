@@ -9,6 +9,8 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.stream.Collectors;
 
 @Service
 public class ClientService {
@@ -47,5 +49,18 @@ public class ClientService {
         if (updatedClient.getIncome() != client.getIncome()){
             updatedClient.setIncome(client.getIncome());
         }
+    }
+
+    public OptionalDouble getEarningsAverage() {
+        List<Client> clients = clientRepository.findAll();
+        return clients.stream()
+                .mapToDouble(Client::getIncome)
+                .average();
+    }
+
+    public List<Client> getTopEarners() {
+        List<Client> clients = clientRepository.findAll();
+        return clients.stream()
+                .filter(client -> client.getIncome() >= 10000).collect(Collectors.toList());
     }
 }
