@@ -1,8 +1,10 @@
 package com.example.patagoniatest.service;
 
 import com.example.patagoniatest.model.Client;
+import com.example.patagoniatest.model.ClientType;
 import com.example.patagoniatest.repository.ClientRepository;
 
+import com.example.patagoniatest.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -21,11 +23,12 @@ class ClientServiceTest {
 
     @Mock
     private ClientRepository clientRepository;
+    private RoleRepository roleRepository;
     private ClientService serviceUnderTest;
 
     @BeforeEach
     void setUp(){
-        serviceUnderTest = new ClientService(clientRepository);
+        serviceUnderTest = new ClientService(clientRepository, roleRepository);
     }
 
     @Test
@@ -39,7 +42,8 @@ class ClientServiceTest {
         Client client = new Client(
                 456465l,
                 "Esteban Dido",
-                123123
+                123123,
+                ClientType.Regular
         );
 
         serviceUnderTest.addClient(client);

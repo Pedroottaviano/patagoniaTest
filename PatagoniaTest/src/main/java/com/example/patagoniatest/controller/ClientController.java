@@ -1,8 +1,10 @@
 package com.example.patagoniatest.controller;
 
 import com.example.patagoniatest.model.Client;
+import com.example.patagoniatest.model.Role;
 import com.example.patagoniatest.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.OptionalDouble;
 @RestController
 @RequestMapping("/clients")
 public class ClientController {
-
+    
     private final ClientService clientService;
 
     @Autowired
@@ -23,6 +25,16 @@ public class ClientController {
     @GetMapping
     public List<Client> getClients(){
         return clientService.getClients();
+    }
+
+    @PostMapping("/saveRole")
+    public Role saveRole(@RequestBody Role role){
+        return clientService.saveRole(role);
+    }
+
+    @PutMapping("/{fullName}/add/{name}")
+    public void addRole(@PathVariable String fullName, @PathVariable String name){
+        clientService.addRoleToClient(fullName, name);
     }
 
     @GetMapping("/getEarningsAverage")

@@ -1,7 +1,10 @@
 package com.example.patagoniatest.service;
 
 import com.example.patagoniatest.model.Client;
+import com.example.patagoniatest.model.Role;
 import com.example.patagoniatest.repository.ClientRepository;
+import com.example.patagoniatest.repository.RoleRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +16,29 @@ import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ClientService {
 
     private final ClientRepository clientRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public ClientService(ClientRepository clientRepository) {
+    public ClientService(ClientRepository clientRepository, RoleRepository roleRepository) {
         this.clientRepository = clientRepository;
+        this.roleRepository = roleRepository;
+    }
+
+    public Role saveRole(Role role){
+        log.info("saving role to the database");
+        return roleRepository.save(role);
+    }
+
+    @Transactional
+    public void addRoleToClient(String fullName, String roleName){
+        log.info("Adding {} role to user: {}", roleName, fullName);
+        Client client = clientRepository.findByFullName(fullName);
+        Role role = roleRepository.findByName(roleName);
+        client.getRoles().add(role);
     }
 
     public List<Client> getClients() {
