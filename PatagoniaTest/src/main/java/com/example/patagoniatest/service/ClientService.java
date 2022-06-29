@@ -6,18 +6,19 @@ import com.example.patagoniatest.repository.ClientRepository;
 import com.example.patagoniatest.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalDouble;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class ClientService {
+public class ClientService implements UserDetailsService {
 
     private final ClientRepository clientRepository;
     private final RoleRepository roleRepository;
@@ -81,5 +82,17 @@ public class ClientService {
         List<Client> clients = clientRepository.findAll();
         return clients.stream()
                 .filter(client -> client.getIncome() >= 10000).collect(Collectors.toList());
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String fullName) throws UsernameNotFoundException {
+        Client client = clientRepository.findByFullName(fullName);
+        if(client == null){
+            log.error("Client not found");
+            throw new UsernameNotFoundException("Client not Found");
+        }
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        client.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
+        return new org.springframework.security.core.userdetails.User(client.getFullName(),client.getPassword(),authorities);
     }
 }

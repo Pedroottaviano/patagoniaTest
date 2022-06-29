@@ -5,6 +5,7 @@ import com.example.patagoniatest.model.Role;
 import com.example.patagoniatest.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class ClientController {
         this.clientService = clientService;
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @GetMapping
     public List<Client> getClients(){
         return clientService.getClients();

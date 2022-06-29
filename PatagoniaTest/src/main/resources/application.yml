@@ -2,8 +2,8 @@ spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/patagonia_test
-    username: root
-    password: cr203232
+    username: colocarusuario
+    password: colocarpassword
   jpa:
     hibernate.ddl-auto: update
     generate-ddl: true
